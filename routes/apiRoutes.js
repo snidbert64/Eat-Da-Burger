@@ -6,6 +6,7 @@
 
 var tableData = require("../data/tableData");
 var waitListData = require("../data/waitinglistData");
+var friends = require("../data/friends")
 
 
 // ===============================================================================
@@ -47,6 +48,24 @@ module.exports = function(app) {
       waitListData.push(req.body);
       res.json(false);
     }
+  });
+
+  app.post("/api/friends", function(req, res) {
+    var bestMatch;
+    var difference;
+    var lowestDifference = 1000;
+    for (var i = 0; i < friends.length; i++) {
+      difference = 0;
+      for (var j = 0; j < req.body.scores.length; j++) {
+        difference += Math.abs(friends[i].scores[j] - req.body.scores[j]);
+      }
+      if (difference < lowestDifference) {
+        lowestDifference = difference;
+        bestMatch = i;
+      }
+    }
+    res.json(friends[bestMatch]);
+    friends.push(req.body);
   });
 
   // ---------------------------------------------------------------------------
