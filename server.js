@@ -1,40 +1,39 @@
-// We require/import the HTTP module
-const http = require('http');
+// ==============================================================================
+// DEPENDENCIES
+// Series of npm packages that we will use to give our server useful functionality
+// ==============================================================================
 
-// =====================================================================
+var express = require("express");
 
-// Then define the ports we want to listen to
-const PORTONE = 7000;
-const PORTTWO = 7500;
+// ==============================================================================
+// EXPRESS CONFIGURATION
+// This sets up the basic properties for our express server
+// ==============================================================================
 
-// =====================================================================
+// Tells node that we are creating an "express" server
+var app = express();
 
-// We need two different functions to handle requests, one for each server.
-const handleRequestOne = (request, response) => {
-  response.end('To err is human, but to really foul things up you need a computer.');
-}
+// Sets an initial port. We"ll use this later in our listener
+var PORT = process.env.PORT || 8080;
 
-const handleRequestTwo = (request, response) => {
-  response.end("Never trust a computer you can't throw out a window.");
-}
+// Sets up the Express app to handle data parsing
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// =====================================================================
+// ================================================================================
+// ROUTER
+// The below points our server to a series of "route" files.
+// These routes give our server a "map" of how to respond when users visit or request data from various URLs.
+// ================================================================================
 
-// Create our servers
-const serverOne = http.createServer(handleRequestOne);
-const serverTwo = http.createServer(handleRequestTwo);
+require("./routes/apiRoutes")(app);
+require("./routes/htmlRoutes")(app);
 
-// =====================================================================
+// =============================================================================
+// LISTENER
+// The below code effectively "starts" our server
+// =============================================================================
 
-// Starting our servers
-serverOne.listen(PORTONE, () => {
-
-  // Callback triggered when server is successfully listening. Hurray!
-  console.log(`Server listening on: http://localhost:${PORTONE}`);
-});
-
-serverTwo.listen(PORTTWO, () => {
-
-  // Callback triggered when server is successfully listening. Hurray!
-  console.log(`Server listening on: http://localhost:${PORTTWO}`);
+app.listen(PORT, function() {
+  console.log("App listening on PORT: " + PORT);
 });
